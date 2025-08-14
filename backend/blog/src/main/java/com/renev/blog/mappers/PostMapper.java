@@ -1,8 +1,10 @@
 package com.renev.blog.mappers;
 
 import com.renev.blog.domain.CreatePostRequest;
+import com.renev.blog.domain.UpdatePostRequest;
 import com.renev.blog.domain.dto.CreatePostRequestDto;
 import com.renev.blog.domain.dto.PostDto;
+import com.renev.blog.domain.dto.UpdatePostRequestDto;
 import com.renev.blog.domain.entities.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,4 +18,6 @@ public interface PostMapper {
     PostDto toDto(Post post);
 
     CreatePostRequest toCreatePostRequest(CreatePostRequestDto dto);
+
+    UpdatePostRequest toUpdatePostRequest(UpdatePostRequestDto dto);
 }

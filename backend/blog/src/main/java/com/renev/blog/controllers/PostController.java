@@ -1,13 +1,16 @@
 package com.renev.blog.controllers;
 
 import com.renev.blog.domain.CreatePostRequest;
+import com.renev.blog.domain.UpdatePostRequest;
 import com.renev.blog.domain.dto.CreatePostRequestDto;
 import com.renev.blog.domain.dto.PostDto;
+import com.renev.blog.domain.dto.UpdatePostRequestDto;
 import com.renev.blog.domain.entities.Post;
 import com.renev.blog.domain.entities.User;
 import com.renev.blog.mappers.PostMapper;
 import com.renev.blog.services.PostService;
 import com.renev.blog.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +43,27 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody CreatePostRequestDto createPostRequestDto, @RequestAttribute UUID userId) {
+    public ResponseEntity<PostDto> createPost(
+            @Valid @RequestBody CreatePostRequestDto createPostRequestDto,
+            @RequestAttribute UUID userId) {
         User loggedInUser = userService.getUserById(userId);
         CreatePostRequest createPostRequest = postMapper.toCreatePostRequest(createPostRequestDto);
         Post createdPost = postService.createPost(loggedInUser, createPostRequest);
         return new ResponseEntity<>(postMapper.toDto(createdPost), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<PostDto> updatePost(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto) {
+        UpdatePostRequest updatePostRequest = postMapper.toUpdatePostRequest(updatePostRequestDto);
+        Post updatedPost = postService.updatePost(id, updatePostRequest);
+        return new ResponseEntity<>(postMapper.toDto(updatedPost), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<PostDto> getPost(@PathVariable UUID id) {
+        Post post = postService.getPost(id);
+        return new ResponseEntity<>(postMapper.toDto(post), HttpStatus.OK);
     }
 }

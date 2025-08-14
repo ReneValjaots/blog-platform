@@ -40,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        int jwtExpiration = 1000 * 60 * 24;
+        int jwtExpiration = 100_000 * 60 * 24;
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
