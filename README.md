@@ -72,3 +72,6 @@ The application provides fundamental CRUD (Create, Read, Update, Delete) functio
   ```
 
 4) **Application url** After the containers are running, the frontend should be accessible at: http://localhost:5173/
+5) **Test user** For testing purposes, you can log in with the following credentials:
+   - **Email:** `user@test.com`
+   - **Password:** `password`
