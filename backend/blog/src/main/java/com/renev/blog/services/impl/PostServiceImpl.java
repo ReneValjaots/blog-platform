@@ -14,6 +14,7 @@ import com.renev.blog.services.PostService;
 import com.renev.blog.services.TagService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,9 +102,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post updatePost(UUID id, UpdatePostRequest updatePostRequest) {
+    public Post updatePost(UUID id, UpdatePostRequest updatePostRequest, User user) {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Post does not exist with id: " + id));
+
+        if (!existingPost.getAuthor().equals(user)) {
+            throw new AccessDeniedException("You are not allowed to update this post");
+        }
+
         existingPost.setTitle(updatePostRequest.getTitle());
         existingPost.setContent(updatePostRequest.getContent());
         existingPost.setStatus(updatePostRequest.getStatus());
@@ -125,8 +131,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(UUID id) {
+    public void deletePost(UUID id, User user) {
         Post post = getPost(id);
+        if (!post.getAuthor().equals(user)) {
+            throw new AccessDeniedException("You are not authorized to delete this post.");
+        }
         postRepository.delete(post);
     }
 

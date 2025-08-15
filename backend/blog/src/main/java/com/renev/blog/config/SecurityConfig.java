@@ -30,6 +30,16 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         BlogUserDetailsService blogUserDetailsService = new BlogUserDetailsService(userRepository);
 
+        userRepository.findByEmail("uuga@buuga.com").orElseGet(() -> {
+            User second = User.builder()
+                    .name("Test user 2")
+                    .email("uuga@buuga.com")
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+
+            return userRepository.save(second);
+        });
+
         String email = "user@test.com";
         userRepository.findByEmail(email).orElseGet(() -> {
             User newUser = User.builder()
@@ -37,6 +47,7 @@ public class SecurityConfig {
                     .email(email)
                     .password(passwordEncoder().encode("password"))
                     .build();
+
             return userRepository.save(newUser);
         });
 
